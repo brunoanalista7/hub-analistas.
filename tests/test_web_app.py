@@ -122,3 +122,45 @@ def test_partial_board(env):
     create_demand(db, at(8), kayo.id, title="Parcial", owner_id=kayo.id)
     html = c.get("/parcial/quadro").text
     assert "Parcial" in html and "<html" not in html
+
+
+# ---------- achados da revisão final ----------
+
+def test_name_with_apostrophe_is_not_inside_inline_js(env):
+    c, db, kayo, _ = env
+    login(c, kayo)
+    add_person(db, at(9), None, "Pedro D'Ávila")
+    html = c.get("/pessoas").text
+    assert "data-nome=" in html and "confirm('Tirar Pedro" not in html
+
+
+def test_partial_board_carries_fresh_presence(env):
+    c, db, kayo, _ = env
+    login(c, kayo)
+    c.post("/presenca", data={"status": "Na sala"})
+    html = c.get("/parcial/quadro").text
+    assert 'aria-pressed="true"' in html and "Na sala" in html
+
+
+def test_presence_from_yesterday_shows_out_in_app(db):
+    from hub.presence import set_status
+    kayo = add_person(db, at(7, day=18), None, "Kayo")
+    set_status(db, at(9, day=18), kayo.id, "Na sala")
+    c = TestClient(create_app(db, clock=lambda: at(8)), base_url=BASE)
+    login(c, kayo)
+    html = c.get("/parcial/quadro").text
+    pressed = html.split('aria-pressed="true"')[1][:40]
+    assert "Fora da empresa" in pressed
+
+
+def test_editing_demand_of_deactivated_owner_keeps_owner(env):
+    c, db, kayo, bianca = env
+    login(c, kayo)
+    d = create_demand(db, at(8), kayo.id, title="Do Bianca", owner_id=bianca.id)
+    deactivate_person(db, at(9), None, bianca.id)
+    form = c.get(f"/demandas/{d.id}").text
+    assert f'value="{bianca.id}" selected' in form
+    r = c.post(f"/demandas/{d.id}", data={"title": "Do Bianca (revisado)", "owner_id": str(bianca.id)},
+               follow_redirects=False)
+    assert r.status_code == 303
+    assert board(db, at(12))["todo"][0].owner_id == bianca.id

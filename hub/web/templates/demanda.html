@@ -14,7 +14,7 @@
     <div>
       <label for="owner_id">De quem é</label>
       <select id="owner_id" name="owner_id">
-        {% for p in people %}<option value="{{ p.id }}" {% if p.id|string == v.owner_id|string %}selected{% endif %}>{{ p.name }}</option>{% endfor %}
+        {% for p in people %}<option value="{{ p.id }}" {% if p.id|string == v.owner_id|string %}selected{% endif %}>{{ p.name }}{{ ' (desativado)' if not p.active else '' }}</option>{% endfor %}
       </select>
     </div>
     <div>

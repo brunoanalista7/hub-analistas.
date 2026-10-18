@@ -64,7 +64,8 @@ button.link { background: none; border: none; color: var(--azul); padding: 0; fo
 .barra { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
 .barra h1 { margin: 0; }
 .acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.colunas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start; }
+.colunas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.cartao .titulo, .meta span { min-width: 0; overflow-wrap: anywhere; }
 @media (max-width: 860px) { .colunas { grid-template-columns: 1fr; } }
 .coluna { background: color-mix(in srgb, var(--linha) 35%, var(--fundo)); border-radius: var(--raio); padding: 12px; display: grid; gap: 10px; }
 .coluna h2 .contagem { color: var(--texto); }

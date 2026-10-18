@@ -1,5 +1,7 @@
 # Limitações conhecidas
 
+- **O Hub só abre depois que alguém entra no Windows do PC reserva.** "Abrir com o Windows" usa a pasta Inicializar, que roda no login. Depois de uma reinicialização (por exemplo, atualização do Windows durante a noite) numa conta com senha, alguém precisa entrar no PC para o Hub e a TV voltarem.
+- **Bloqueio de tela da empresa:** o Hub impede a suspensão e o descanso de tela, mas uma política de bloqueio definida pela TI pode bloquear a tela mesmo assim. Confira no primeiro uso.
 - **Depende do PC reserva ligado.** Ele abre o Hub com o Windows e impede a suspensão e o descanso de tela. Se ele desligar, o app dos analistas para e a TV mostra "sem atualização".
 - **Firewall:** os outros PCs precisam alcançar a porta 8800 do PC reserva. Se o Windows exigir administrador, a TI precisa criar uma regra (ver [primeiro-uso.md](primeiro-uso.md)).
 - **Sem senha:** qualquer pessoa na rede da empresa que saiba o endereço pode abrir o app. O histórico mostra quem fez o quê, mas ninguém impede alguém de escolher o nome de outra pessoa.

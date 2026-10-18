@@ -102,7 +102,8 @@
   async function atualizar() {
     relogio();
     try {
-      const r = await fetch("/api/tv", { cache: "no-store" });
+      // servidor travado (aceita a conexão mas não responde) também conta como "sem atualização"
+      const r = await fetch("/api/tv", { cache: "no-store", signal: AbortSignal.timeout(4000) });
       if (!r.ok) throw new Error("HTTP " + r.status);
       const dados = await r.json();
       ultimaAtualizacao = new Date();

@@ -46,6 +46,12 @@ def _validate(conn, name: str, initials: str, color: str, person_id: int | None)
 def add_person(db: Database, now: datetime, actor_id: int | None, name: str, initials: str = "", color: str = "") -> Person:
     name = " ".join(name.split())
     with db.connect() as conn:
+        # quem foi desativado volta com o mesmo cadastro (e o mesmo histórico), em vez de ser recusado
+        old = conn.execute("SELECT id FROM people WHERE lower(name) = lower(?) AND active = 0", (name,)).fetchone()
+        if old:
+            conn.execute("UPDATE people SET active = 1 WHERE id = ?", (old["id"],))
+            log_event(conn, now, actor_id, "pessoa_reativada", f"pessoa:{old['id']}", name)
+            return _row(conn.execute("SELECT * FROM people WHERE id = ?", (old["id"],)).fetchone())
         initials = (initials.strip() or _default_initials(name)).upper()
         if not color:
             used = {r[0] for r in conn.execute("SELECT color FROM people WHERE active = 1")}

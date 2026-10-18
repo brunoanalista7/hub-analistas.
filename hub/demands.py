@@ -42,7 +42,8 @@ def _iso(dt: datetime) -> str:
     return dt.isoformat(timespec="seconds")
 
 
-def _clean(conn, title: str, owner_id: int, folder: str | None, requested_by: str | None) -> tuple:
+def _clean(conn, title: str, owner_id: int, folder: str | None, requested_by: str | None,
+           current_owner_id: int | None = None) -> tuple:
     title = " ".join((title or "").split())
     requested_by = " ".join((requested_by or "").split()) or None
     folder = folder or None
@@ -51,7 +52,8 @@ def _clean(conn, title: str, owner_id: int, folder: str | None, requested_by: st
     if len(title) > MAX_TITLE:
         raise ValidationError(f"Título muito longo (máximo {MAX_TITLE}).")
     owner = conn.execute("SELECT active FROM people WHERE id = ?", (owner_id,)).fetchone()
-    if owner is None or not owner["active"]:
+    # manter o dono atual vale mesmo se ele foi desativado; só não dá para escolher um desativado novo
+    if owner is None or (not owner["active"] and owner_id != current_owner_id):
         raise ValidationError("Escolha o dono da demanda.")
     if folder is not None and folder not in FOLDERS:
         raise ValidationError("Pasta inválida.")
@@ -84,8 +86,8 @@ def create_demand(db: Database, now: datetime, actor_id: int | None, *, title: s
 def update_demand(db: Database, now: datetime, actor_id: int | None, demand_id: int, *, title: str, owner_id: int,
                   folder: str | None, requested_by: str | None, due: date | None, reserved: bool) -> Demand:
     with db.connect() as conn:
-        _get(conn, demand_id)
-        title, folder, requested_by = _clean(conn, title, owner_id, folder, requested_by)
+        current = _get(conn, demand_id)
+        title, folder, requested_by = _clean(conn, title, owner_id, folder, requested_by, current["owner_id"])
         conn.execute(
             "UPDATE demands SET title = ?, owner_id = ?, folder = ?, requested_by = ?, due = ?, reserved = ?, "
             "updated_at = ? WHERE id = ?",

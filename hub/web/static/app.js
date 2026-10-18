@@ -1,14 +1,19 @@
-// Quadro do analista: recarrega só o trecho do quadro a cada 10 s.
+// Quadro do analista: recarrega o trecho do quadro (presença + colunas) a cada 10 s.
 // Fica só nesta página: nos formulários nada se atualiza sozinho, para não apagar o que se digita.
 (function () {
   "use strict";
   const quadro = document.getElementById("quadro");
   if (!quadro) return;
+  let atual = null;
   setInterval(async () => {
     if (document.hidden) return;
     try {
-      const r = await fetch(quadro.dataset.parcial, { cache: "no-store" });
-      if (r.ok) quadro.innerHTML = await r.text();  // HTML do próprio servidor, já escapado pelo Jinja
+      const r = await fetch(quadro.dataset.parcial, { cache: "no-store", signal: AbortSignal.timeout(8000) });
+      if (!r.ok) return;
+      const html = await r.text();
+      // só troca se algo mudou: trocar à toa tira o foco e pode engolir um clique
+      if (html !== atual) quadro.innerHTML = html;  // HTML do próprio servidor, já escapado
+      atual = html;
     } catch (e) {
       // sem rede: mantém o que está na tela e tenta de novo no próximo ciclo
     }

@@ -30,7 +30,11 @@ Apague o arquivo `Hub.cmd` em `%APPDATA%\Microsoft\Windows\Start Menu\Programs\S
 ## Onde ficam os dados
 
 `%LOCALAPPDATA%\Hub`: `hub.db` (o banco), `copias\` (as cópias diárias dos últimos 14 dias) e `hub.log`.
-Para restaurar uma cópia: feche o Hub e copie `copias\hub-AAAA-MM-DD.db` por cima de `hub.db`.
+Para restaurar uma cópia:
+
+1. Feche o Hub. Ele roda sem janela: no **Gerenciador de Tarefas**, encerre o processo **pythonw.exe** do Hub.
+2. Em `%LOCALAPPDATA%\Hub`, **apague `hub.db-wal` e `hub.db-shm`**, se existirem. Sem isso, o SQLite reaplica alterações antigas por cima da cópia restaurada e pode estragar o banco.
+3. Copie `copias\hub-AAAA-MM-DD.db` por cima de `hub.db` e abra o Hub de novo (`iniciar.bat`).
 
 ## Atualizar para uma versão nova
 

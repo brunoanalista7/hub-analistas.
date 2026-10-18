@@ -83,7 +83,10 @@ def create_app(db: Database, clock: Callable[[], datetime] = datetime.now) -> Fa
 
     def board_context(user: Person, show_all: bool) -> dict:
         now = clock()
+        # a presença vai junto no trecho que se atualiza: um app aberto de ontem não mostra o status velho
+        status = next((s for p, s, _ in presence_board(db, now) if p.id == user.id), STATUSES[-1])
         return {
+            "status": status,
             "columns": board(db, now, owner_id=None if show_all else user.id),
             "owners": {p.id: p for p in list_people(db, active_only=False)},
             "today": now.date(),
@@ -111,8 +114,7 @@ def create_app(db: Database, clock: Callable[[], datetime] = datetime.now) -> Fa
         user = me(request)
         if user is None:
             return to_login()
-        status = next(s for p, s, _ in presence_board(db, clock()) if p.id == user.id)
-        return page(request, "quadro.html", user, status=status, **board_context(user, bool(todas)))
+        return page(request, "quadro.html", user, **board_context(user, bool(todas)))
 
     @app.get("/parcial/quadro", response_class=HTMLResponse)
     def quadro_parcial(request: Request, todas: int = 0):
@@ -130,7 +132,13 @@ def create_app(db: Database, clock: Callable[[], datetime] = datetime.now) -> Fa
         return RedirectResponse("/", status_code=303)
 
     def demand_form(request: Request, user: Person, values: dict, status_code: int = 200, **ctx) -> HTMLResponse:
-        return page(request, "demanda.html", user, status_code, v=values, people=list_people(db), **ctx)
+        people = list_people(db)
+        # dono desativado continua na lista desta demanda; senão o navegador escolheria outro dono sozinho
+        owner_id = int(values["owner_id"]) if str(values.get("owner_id", "")).isdigit() else None
+        owner = get_person(db, owner_id) if owner_id else None
+        if owner and not owner.active:
+            people = people + [owner]
+        return page(request, "demanda.html", user, status_code, v=values, people=people, **ctx)
 
     def parse_demand(form) -> tuple[dict, dict]:
         values = {
@@ -295,4 +303,5 @@ def describe(row, people: dict, titles: dict) -> str:
         "pessoa_criada": f"{who} cadastrou {name}",
         "pessoa_editada": f"{who} editou o cadastro de {name}",
         "pessoa_desativada": f"{who} desativou {name}",
+        "pessoa_reativada": f"{who} reativou {name}",
     }.get(kind, f"{who}: {kind}")

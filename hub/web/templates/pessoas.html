@@ -17,7 +17,8 @@
       <input type="color" name="color" value="{{ p.color }}" aria-label="Cor">
       <button class="discreto">Salvar</button>
     </form>
-    <form method="post" action="/pessoas/{{ p.id }}/desativar" onsubmit="return confirm('Tirar {{ p.name }} do Hub? As demandas e o histórico continuam guardados.')">
+    {# o nome vai num data-atributo: dentro do JS, um apóstrofo (D'Ávila) quebraria o confirm #}
+    <form method="post" action="/pessoas/{{ p.id }}/desativar" data-nome="{{ p.name }}" onsubmit="return confirm('Tirar ' + this.dataset.nome + ' do Hub? As demandas e o histórico continuam guardados.')">
       <button class="perigo">Desativar</button>
     </form>
   </li>

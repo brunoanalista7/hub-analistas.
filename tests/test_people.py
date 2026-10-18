@@ -48,3 +48,11 @@ def test_update_and_deactivate_with_events(db):
     assert list_people(db) == [] and [p.name for p in list_people(db, active_only=False)] == ["Ana"]
     kinds = [e["kind"] for e in events(db, date(2026, 10, 19), date(2026, 10, 19))]
     assert kinds == ["pessoa_desativada", "pessoa_editada", "pessoa_criada"]
+
+
+def test_adding_a_deactivated_name_brings_the_person_back(db):
+    a = add_person(db, at(8), None, "Ana")
+    deactivate_person(db, at(9), None, a.id)
+    back = add_person(db, at(10), None, "ana")
+    assert back.id == a.id and back.active
+    assert [e["kind"] for e in events(db, date(2026, 10, 19), date(2026, 10, 19))][0] == "pessoa_reativada"
