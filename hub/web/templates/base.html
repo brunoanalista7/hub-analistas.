@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Hub dos Analistas{% endblock %}</title>
+  <link rel="icon" href="/static/hub.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topo">
+    <a class="marca" href="/"><img src="/static/hub.svg" alt="" width="30" height="30"> Hub dos Analistas</a>
+    {% if user %}
+    <nav aria-label="Menu principal">
+      <a href="/" {% if active == 'quadro' %}aria-current="page"{% endif %}>Quadro</a>
+      <a href="/historico" {% if active == 'historico' %}aria-current="page"{% endif %}>Histórico</a>
+      <a href="/pessoas" {% if active == 'pessoas' %}aria-current="page"{% endif %}>Pessoas</a>
+      <a href="/tv" target="_blank" rel="noopener">Ver a TV</a>
+    </nav>
+    <form class="eu" method="post" action="/sair">
+      <span class="bolinha" style="--cor: {{ user.color }}">{{ user.initials }}</span>
+      <span>{{ user.name }}</span>
+      <button class="link">Trocar</button>
+    </form>
+    {% endif %}
+  </header>
+  <main>{% block main %}{% endblock %}</main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

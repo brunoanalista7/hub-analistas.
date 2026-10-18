@@ -1,0 +1,34 @@
+<div class="colunas">
+  {% for col, label in COLUMN_LABELS.items() %}
+  <section class="coluna col-{{ col }}" aria-label="{{ label }}">
+    <h2>{{ label }} <span class="contagem">{{ columns[col]|length }}</span></h2>
+    {% for d in columns[col] %}
+    {% set dono = owners[d.owner_id] %}
+    <article class="cartao {% if is_overdue(d, today) %}atrasada{% endif %}" style="--cor: {{ dono.color }}">
+      <div class="cartao-topo">
+        <span class="bolinha">{{ dono.initials }}</span>
+        <a class="titulo" href="/demandas/{{ d.id }}">{{ d.title }}</a>
+      </div>
+      <p class="meta">
+        {% if d.reserved %}<span class="reservada">Reservada</span>{% endif %}
+        {% if d.folder %}<span>Pasta {{ d.folder }}</span>{% endif %}
+        {% if d.requested_by %}<span>Pedido por {{ d.requested_by }}</span>{% endif %}
+        {% if d.due %}<span class="{{ 'atraso' if is_overdue(d, today) else '' }}">{{ 'atrasada · ' if is_overdue(d, today) else '' }}prazo {{ d.due.strftime('%d/%m') }}</span>{% endif %}
+      </p>
+      <div class="cartao-acoes">
+        {% if col == 'todo' %}
+          <form method="post" action="/demandas/{{ d.id }}/mover"><input type="hidden" name="column" value="doing"><button>Começar</button></form>
+        {% elif col == 'doing' %}
+          <form method="post" action="/demandas/{{ d.id }}/mover"><input type="hidden" name="column" value="done"><button>Concluir</button></form>
+          <form method="post" action="/demandas/{{ d.id }}/mover"><input type="hidden" name="column" value="todo"><button class="discreto">Voltar</button></form>
+        {% else %}
+          <form method="post" action="/demandas/{{ d.id }}/mover"><input type="hidden" name="column" value="doing"><button class="discreto">Reabrir</button></form>
+        {% endif %}
+      </div>
+    </article>
+    {% else %}
+    <p class="vazio">Nada aqui.</p>
+    {% endfor %}
+  </section>
+  {% endfor %}
+</div>

@@ -114,6 +114,18 @@ def delete_demand(db: Database, now: datetime, actor_id: int | None, demand_id: 
         log_event(conn, now, actor_id, "demanda_excluida", f"demanda:{demand_id}", r["title"])
 
 
+def find_demand(db: Database, demand_id: int) -> Demand | None:
+    with db.connect() as conn:
+        r = conn.execute("SELECT * FROM demands WHERE id = ? AND deleted = 0", (demand_id,)).fetchone()
+    return _row(r) if r else None
+
+
+def demand_titles(db: Database) -> dict[int, str]:
+    """Título atual de cada demanda, inclusive excluídas (para o histórico do app)."""
+    with db.connect() as conn:
+        return {r["id"]: r["title"] for r in conn.execute("SELECT id, title FROM demands")}
+
+
 def is_overdue(d: Demand, today: date) -> bool:
     return d.due is not None and d.due < today and d.column != "done"
 

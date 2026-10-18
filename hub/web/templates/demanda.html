@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% set active = 'quadro' %}
+{% block title %}{{ 'Editar' if v.id else 'Nova' }} demanda · Hub dos Analistas{% endblock %}
+{% block main %}
+<h1>{{ 'Editar demanda' if v.id else 'Nova demanda' }}</h1>
+{% if error %}<div class="erro" role="alert">{{ error }}</div>{% endif %}
+
+<form class="ficha" method="post" action="/demandas{{ '/' ~ v.id if v.id else '' }}">
+  <div>
+    <label for="title">Título</label>
+    <input type="text" id="title" name="title" value="{{ v.title }}" maxlength="120" required autofocus placeholder="Relatório Aurora para o gerente">
+  </div>
+  <div class="linha">
+    <div>
+      <label for="owner_id">De quem é</label>
+      <select id="owner_id" name="owner_id">
+        {% for p in people %}<option value="{{ p.id }}" {% if p.id|string == v.owner_id|string %}selected{% endif %}>{{ p.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="folder">Pasta</label>
+      <select id="folder" name="folder">
+        <option value="">Nenhuma</option>
+        {% for f in FOLDERS %}<option value="{{ f }}" {% if f == v.folder %}selected{% endif %}>{{ 'G (Canal Farma)' if f == 'G' else f }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="linha">
+    <div>
+      <label for="requested_by">Pedido por <span class="opcional">(opcional)</span></label>
+      <input type="text" id="requested_by" name="requested_by" value="{{ v.requested_by }}" maxlength="60" placeholder="Rafael">
+    </div>
+    <div>
+      <label for="due">Prazo <span class="opcional">(opcional)</span></label>
+      <input type="date" id="due" name="due" value="{{ v.due }}">
+    </div>
+  </div>
+  <label class="check">
+    <input type="checkbox" name="reserved" {% if v.reserved %}checked{% endif %}>
+    <span><strong>Reservada</strong> · na TV aparece só "Demanda reservada", sem o título</span>
+  </label>
+  <div class="acoes">
+    <button>Salvar</button>
+    <a class="botao discreto" href="/">Cancelar</a>
+  </div>
+</form>
+
+{% if v.id %}
+<form method="post" action="/demandas/{{ v.id }}/excluir" onsubmit="return confirm('Excluir esta demanda?')" class="excluir">
+  <button class="perigo">Excluir demanda</button>
+</form>
+{% endif %}
+{% endblock %}

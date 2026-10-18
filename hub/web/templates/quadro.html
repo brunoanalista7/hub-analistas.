@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set active = 'quadro' %}
+{% block main %}
+<section class="presenca" aria-labelledby="h-presenca">
+  <h2 id="h-presenca">Onde você está?</h2>
+  <div class="status-botoes">
+    {% for s in STATUSES %}
+    <form method="post" action="/presenca">
+      <input type="hidden" name="status" value="{{ s }}">
+      <button class="status-botao st-{{ loop.index }}" aria-pressed="{{ 'true' if s == status else 'false' }}">{{ s }}</button>
+    </form>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="barra">
+  <h1>Quadro</h1>
+  <div class="acoes">
+    {% if show_all %}<a class="botao discreto" href="/">Só as minhas</a>
+    {% else %}<a class="botao discreto" href="/?todas=1">Ver todas</a>{% endif %}
+    <a class="botao" href="/demandas/nova">+ Nova demanda</a>
+  </div>
+</div>
+
+<div id="quadro" data-parcial="/parcial/quadro{{ '?todas=1' if show_all else '' }}">
+  {% include "_quadro.html" %}
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/app.js"></script>{% endblock %}

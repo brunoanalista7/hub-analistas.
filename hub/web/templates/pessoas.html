@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% set active = 'pessoas' %}
+{% block title %}Pessoas · Hub dos Analistas{% endblock %}
+{% block main %}
+<h1>Pessoas</h1>
+{% if error %}<div class="erro" role="alert">{{ error }}</div>{% endif %}
+
+{% if people %}
+<ul class="lista-pessoas">
+  {% for p in people %}
+  <li>
+    <span class="bolinha" style="--cor: {{ p.color }}">{{ p.initials }}</span>
+    <form class="ficha-inline" method="post" action="/pessoas">
+      <input type="hidden" name="id" value="{{ p.id }}">
+      <input type="text" name="name" value="{{ p.name }}" aria-label="Nome">
+      <input type="text" name="initials" value="{{ p.initials }}" maxlength="3" aria-label="Iniciais" class="curto">
+      <input type="color" name="color" value="{{ p.color }}" aria-label="Cor">
+      <button class="discreto">Salvar</button>
+    </form>
+    <form method="post" action="/pessoas/{{ p.id }}/desativar" onsubmit="return confirm('Tirar {{ p.name }} do Hub? As demandas e o histórico continuam guardados.')">
+      <button class="perigo">Desativar</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<form class="ficha cartao-form" method="post" action="/pessoas">
+  <h2>Adicionar pessoa</h2>
+  <input type="hidden" name="id" value="">
+  <div class="linha">
+    <div><label for="name">Nome</label><input type="text" id="name" name="name" value="{{ v.name if v and not v.id else '' }}" required></div>
+    <div><label for="initials">Iniciais <span class="opcional">(opcional)</span></label><input type="text" id="initials" name="initials" maxlength="3" class="curto"></div>
+  </div>
+  <p class="ajuda">A cor é escolhida sozinha, diferente das outras. Dá para trocar depois.</p>
+  <input type="hidden" name="color" value="">
+  <div><button>Adicionar</button></div>
+</form>
+{% endblock %}
