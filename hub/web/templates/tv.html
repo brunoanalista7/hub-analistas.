@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hub dos Analistas · TV</title>
+  <link rel="icon" href="/static/hub.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/tv.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="marca"><img src="/static/hub.svg" alt="" width="44" height="44"> Hub dos Analistas</div>
+    <div class="relogio"><span id="data"></span><strong id="hora"></strong></div>
+  </header>
+  <div id="sem-conexao" class="sem-conexao" hidden></div>
+  <section id="presenca" class="presenca" aria-label="Presença da equipe"></section>
+  <main class="quadro">
+    <section class="coluna" data-col="todo"><h2>A fazer <span class="contagem"></span></h2><div class="cartoes"></div></section>
+    <section class="coluna" data-col="doing"><h2>Fazendo <span class="contagem"></span></h2><div class="cartoes"></div></section>
+    <section class="coluna" data-col="done"><h2>Concluído hoje <span class="contagem"></span></h2><div class="cartoes"></div></section>
+  </main>
+  <script src="/static/tv.js"></script>
+</body>
+</html>

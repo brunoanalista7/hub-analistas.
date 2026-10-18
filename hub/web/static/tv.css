@@ -1,0 +1,91 @@
+/* TV da sala: pensada para 1920x1080 vista a ~4 m. 1rem = 16px em 1920 de largura
+   e escala junto com a tela, então nada depende da resolução da TV. */
+:root {
+  --fundo: #0e141a;
+  --painel: #151d25;
+  --cartao: #1b252f;
+  --linha: #2a3642;
+  --texto: #eef1f4;
+  --suave: #9aa6b2;
+  --sala: #4cc06d;
+  --reuniao: #f0b24a;
+  --pausa: #7fb2e5;
+  --fora: #6f7a86;
+  --atraso: #f2867a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { font-size: calc(100vw / 120); }
+body {
+  margin: 0; height: 100vh; overflow: hidden;
+  display: grid; grid-template-rows: auto auto auto 1fr; gap: 1rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  background: var(--fundo); color: var(--texto);
+  font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+}
+
+.topo { display: flex; justify-content: space-between; align-items: center; }
+.marca { display: flex; align-items: center; gap: .75rem; font-size: 2rem; font-weight: 700; letter-spacing: .01em; }
+.marca img { width: 2.75rem; height: 2.75rem; }
+.relogio { display: flex; align-items: baseline; gap: 1rem; }
+.relogio span { font-size: 1.6rem; color: var(--suave); }
+.relogio strong { font-size: 2.75rem; font-variant-numeric: tabular-nums; }
+
+.sem-conexao {
+  justify-self: start; padding: .4rem 1rem; border-radius: 999px;
+  background: #3a2a14; color: #f3c46b; font-size: 1.25rem; font-weight: 600;
+}
+
+/* ---------- presença ---------- */
+.presenca { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: .75rem; }
+.pessoa {
+  display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 0 .9rem;
+  background: var(--painel); border-radius: .9rem; padding: .8rem 1rem;
+  border-top: .3rem solid var(--cor);
+}
+.pessoa .ini {
+  grid-row: span 2; width: 3.4rem; height: 3.4rem; border-radius: 50%;
+  display: grid; place-items: center; background: var(--cor); color: #0e141a;
+  font-weight: 800; font-size: 1.4rem;
+}
+.pessoa .nome { font-size: 2rem; font-weight: 700; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pessoa .status { font-size: 1.35rem; color: var(--suave); display: flex; align-items: center; gap: .5rem; white-space: nowrap; }
+.pessoa .status::before { content: ""; width: .85rem; height: .85rem; border-radius: 50%; background: var(--st); flex: none; }
+.pessoa.st-sala { --st: var(--sala); } .pessoa.st-reuniao { --st: var(--reuniao); }
+.pessoa.st-pausa { --st: var(--pausa); } .pessoa.st-fora { --st: var(--fora); }
+.pessoa.st-fora .nome, .pessoa.st-fora .ini { opacity: .55; }
+.pessoa .status b { color: var(--texto); font-weight: 600; }
+
+/* ---------- quadro ---------- */
+.quadro { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; min-height: 0; }
+.coluna { background: var(--painel); border-radius: 1rem; padding: 1rem; display: flex; flex-direction: column; min-height: 0; }
+.coluna h2 { margin: 0 0 .9rem; font-size: 1.6rem; text-transform: uppercase; letter-spacing: .08em; color: var(--suave); }
+.coluna h2 .contagem { color: var(--texto); margin-left: .4rem; }
+.coluna[data-col="doing"] { box-shadow: inset 0 .3rem 0 var(--pausa); }
+.coluna[data-col="done"] { box-shadow: inset 0 .3rem 0 var(--sala); }
+.cartoes { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: .7rem; }
+
+.cartao {
+  display: grid; grid-template-columns: auto 1fr; gap: .2rem .9rem; align-items: start;
+  background: var(--cartao); border-radius: .75rem; padding: .85rem 1rem;
+  border-left: .4rem solid var(--cor); flex: none;
+}
+.cartao .ini {
+  grid-row: span 2; min-width: 2.6rem; height: 2.6rem; padding: 0 .4rem; border-radius: .6rem;
+  display: grid; place-items: center; background: var(--cor); color: #0e141a; font-weight: 800; font-size: 1.15rem;
+}
+.cartao .titulo {
+  font-size: 1.75rem; font-weight: 600; line-height: 1.2;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.cartao .meta { font-size: 1.25rem; color: var(--suave); display: flex; flex-wrap: wrap; gap: .2rem 1rem; }
+.cartao.reservada .titulo { font-style: italic; color: var(--suave); display: flex; align-items: center; gap: .5rem; }
+.cartao.reservada .titulo svg { width: 1.5rem; height: 1.5rem; flex: none; }
+.cartao.atrasada { box-shadow: inset 0 0 0 .15rem var(--atraso); }
+.cartao .atraso { color: var(--atraso); font-weight: 700; }
+.coluna[data-col="done"] .cartao { opacity: .75; }
+.coluna[data-col="done"] .cartao .titulo { text-decoration: line-through; text-decoration-thickness: .1rem; }
+
+.mais { flex: none; text-align: center; font-size: 1.5rem; font-weight: 600; color: var(--suave); padding: .6rem; border: .12rem dashed var(--linha); border-radius: .75rem; }
+.vazio { font-size: 1.4rem; color: var(--suave); padding: .5rem .2rem; }
