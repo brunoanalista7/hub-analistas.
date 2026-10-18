@@ -1,0 +1,6 @@
+.superpowers/
+.claude/
+.venv/
+__pycache__/
+*.db
+*.db-*
