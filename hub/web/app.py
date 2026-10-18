@@ -10,6 +10,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from .. import __version__
 from ..db import Database, events
 from ..demands import (COLUMN_LABELS, COLUMNS, FOLDERS, board, create_demand, delete_demand, demand_titles,
                        find_demand, is_overdue, move_demand, tv_card, update_demand)
@@ -26,6 +27,8 @@ def create_app(db: Database, clock: Callable[[], datetime] = datetime.now) -> Fa
     app = FastAPI(title="Hub dos Analistas", docs_url=None, redoc_url=None)
     app.mount("/static", StaticFiles(directory=HERE / "static"), name="static")
     templates = Jinja2Templates(directory=HERE / "templates")
+    # ?v=versão nos arquivos estáticos: a TV não fica presa a um CSS/JS antigo depois de atualizar
+    templates.env.globals["version"] = __version__
 
     @app.middleware("http")
     async def same_origin_only(request: Request, call_next):

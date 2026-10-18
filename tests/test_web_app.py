@@ -110,9 +110,9 @@ def test_history_readable(env):
 def test_people_admin(env):
     c, db, kayo, _ = env
     login(c, kayo)
-    c.post("/pessoas", data={"id": "", "name": "Elisa", "initials": "", "color": ""})
-    assert "Elisa" in [p.name for p in list_people(db)]
-    r = c.post("/pessoas", data={"id": "", "name": "Elisa", "initials": "", "color": ""})
+    c.post("/pessoas", data={"id": "", "name": "Helena", "initials": "", "color": ""})
+    assert "Helena" in [p.name for p in list_people(db)]
+    r = c.post("/pessoas", data={"id": "", "name": "Helena", "initials": "", "color": ""})
     assert r.status_code == 422 and "Já existe alguém com esse nome." in r.text
 
 

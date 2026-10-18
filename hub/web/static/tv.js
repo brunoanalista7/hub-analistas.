@@ -35,7 +35,7 @@
       card.style.setProperty("--cor", p.color);
       card.append(el("div", "ini", p.initials), el("div", "nome", p.name));
       const st = el("div", "status");
-      st.append(el("b", "", p.status), document.createTextNode(" · desde " + p.since));
+      st.append(el("b", "", p.status), el("span", "", "desde " + p.since));
       card.append(st);
       faixa.append(card);
     }

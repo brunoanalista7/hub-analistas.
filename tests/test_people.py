@@ -10,7 +10,7 @@ from hub.people import PALETTE, ValidationError, add_person, deactivate_person, 
 def test_default_initials_and_distinct_colors(db):
     a = add_person(db, at(8), None, "Ana Clara")
     b = add_person(db, at(8), None, "Kayo")
-    assert (a.initials, b.initials) == ("MR", "K")
+    assert (a.initials, b.initials) == ("AC", "K")
     assert a.color == PALETTE[0] and b.color == PALETTE[1]
 
 

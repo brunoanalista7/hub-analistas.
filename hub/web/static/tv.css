@@ -19,7 +19,7 @@
 html { font-size: calc(100vw / 120); }
 body {
   margin: 0; height: 100vh; overflow: hidden;
-  display: grid; grid-template-rows: auto auto auto 1fr; gap: 1rem;
+  display: grid; grid-template-rows: auto auto 1fr; gap: 1rem;
   padding: 1.25rem 1.5rem 1.5rem;
   background: var(--fundo); color: var(--texto);
   font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
@@ -32,8 +32,10 @@ body {
 .relogio span { font-size: 1.6rem; color: var(--suave); }
 .relogio strong { font-size: 2.75rem; font-variant-numeric: tabular-nums; }
 
+/* aviso por cima da tela, sem empurrar o quadro */
 .sem-conexao {
-  justify-self: start; padding: .4rem 1rem; border-radius: 999px;
+  position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); z-index: 10;
+  padding: .6rem 1.4rem; border-radius: 999px; box-shadow: 0 .4rem 1.5rem rgb(0 0 0 / 50%);
   background: #3a2a14; color: #f3c46b; font-size: 1.25rem; font-weight: 600;
 }
 
@@ -50,7 +52,8 @@ body {
   font-weight: 800; font-size: 1.4rem;
 }
 .pessoa .nome { font-size: 2rem; font-weight: 700; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pessoa .status { font-size: 1.35rem; color: var(--suave); display: flex; align-items: center; gap: .5rem; white-space: nowrap; }
+.pessoa .status { font-size: 1.35rem; color: var(--suave); display: flex; flex-wrap: wrap; align-items: center; gap: 0 .5rem; min-width: 0; }
+.pessoa .status span { white-space: nowrap; }
 .pessoa .status::before { content: ""; width: .85rem; height: .85rem; border-radius: 50%; background: var(--st); flex: none; }
 .pessoa.st-sala { --st: var(--sala); } .pessoa.st-reuniao { --st: var(--reuniao); }
 .pessoa.st-pausa { --st: var(--pausa); } .pessoa.st-fora { --st: var(--fora); }
