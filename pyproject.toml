@@ -1,0 +1,10 @@
+[project]
+name = "hub-analistas"
+version = "0.1.0"
+description = "Hub dos Analistas: presença da equipe e quadro de demandas numa TV da sala."
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+filterwarnings = ["ignore:Using `httpx` with `starlette.testclient`"]
