@@ -1,5 +1,5 @@
 """Banco SQLite do Hub e o histórico de tudo o que acontece."""
-
+# comentario
 import sqlite3
 from contextlib import contextmanager
 from datetime import date, datetime, time
